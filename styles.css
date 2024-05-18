@@ -1,0 +1,56 @@
+
+body,
+h1{
+    margin: 0;
+}
+
+header, 
+footer{
+    background-color: #4682b4;
+    color: white;
+    text-align: center;
+    position: relative;
+}
+
+#form-container{
+    display: flex;
+    justify-content: center;
+    margin: 20px;
+}
+
+form{
+    position: relative;
+}
+
+#search-button{
+    position: absolute;
+    right: 0;
+}
+
+#search-button:hover{
+    cursor: pointer;
+}
+
+#filter-icon{
+    cursor: pointer;
+    position: relative;
+}
+
+#filter-count{
+    display: inline-block;
+    background-color: #f0f0f0;
+    text-align: center;
+    color: #4682b4;
+    height: 15px;
+    width: 15px;
+    border-radius: 50%;
+    position: absolute;
+    right: -7px;
+    top: 7px
+}
+
+main{
+    display: grid;
+    background-color: #f0f0f0;
+    width: 100ch;
+}
