@@ -30,6 +30,7 @@
     </header>
     <main>
         <dialog id="modal-filter">
+            <button id="close-modal" onclick="closeFilter()">&#x2716</button>
             <form onsubmit="filterAndQuery(event)">
                 <select name="tipo" id="tipo">
                     <option value="" disabled selected>Selecione uma opção</option>
@@ -42,8 +43,7 @@
                 </select>
                 <input type="date" name="de" id="de">
                 <input type="date" name="ate" id="ate">
-                <button onclick="closeFilter()">x</button>
-                <button type="submit">Aplicar</button>
+                <button id="apply-button" type="submit">Aplicar</button>
             </form>
         </dialog>
     </main>

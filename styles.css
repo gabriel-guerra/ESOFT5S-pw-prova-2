@@ -4,7 +4,7 @@ h1{
     margin: 0;
 }
 
-header, 
+body > header, 
 footer{
     background-color: #4682b4;
     color: white;
@@ -47,6 +47,21 @@ form{
     position: absolute;
     right: -7px;
     top: 7px
+}
+
+dialog{
+    border: solid 1px;
+    border-radius: 5px;
+}
+
+#modal-filter form{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+#apply-button{
+    grid-column: span 2;
 }
 
 main{
