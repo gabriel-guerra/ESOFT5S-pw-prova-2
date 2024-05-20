@@ -93,3 +93,9 @@ img{
     height: 200px;
     object-fit: cover;
 }
+
+#pagination{
+    display: flex;
+    padding: 0;
+    list-style-type: none;
+}
