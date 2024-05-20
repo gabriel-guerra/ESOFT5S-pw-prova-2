@@ -156,14 +156,30 @@ function fillContent(content){
 function setPaginationButtons(content){
     const ul = document.querySelector('#pagination')
 
-    if (content.totalPages < 10){
-        for (let i = 1; i <= content.totalPages; i++){
-            const li = document.createElement('li');
+    const actual = content.page;
+    const total = content.totalPages;
+    const size = 5;
+    
+    let start = actual - size;
+    let end = actual + size;
 
-            li.innerHTML = `
-            <button>${i}</button>
-            `
-            ul.appendChild(li)
-        }
+    if (start <= 0){
+        end = end - start + 1
+        start = 1
     }
+
+    if (end > total){
+        end = total
+        start = max(end - (actual * 2) + 1, 1)
+    }
+
+    for (let i = start; i < end; i++){
+        const li = document.createElement('li');
+
+        li.innerHTML = `
+        <button>${i}</button>
+        `
+        ul.appendChild(li)
+    }
+
 }
