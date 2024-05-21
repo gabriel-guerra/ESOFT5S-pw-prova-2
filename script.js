@@ -27,16 +27,17 @@ function closeFilter(){
 
 function qtdFilter(count, params){
     const picklist = document.querySelector("#qtd");
-    const qtd = params.get('qtd');
+    let qtd = params.get('qtd')
+    if (qtd > count) qtd = 10
 
     picklist.innerHTML = `<option value="5">5</option><option value="10">10</option>`
 
-    for (let i = 15; i<count; i+= 5){
-        const option = document.createElement('option');
-        option.value = i;
-        option.textContent = i;
+    for (let i = 5; i<count; i+= 5){
+        const option = new Option(i, i)
         picklist.appendChild(option)
     }
+
+    document.querySelector(`option[value="${qtd}"]`).setAttribute('selected', 'selected')
 
 }
 
@@ -112,6 +113,7 @@ async function queryNews(params){
 
 function applyFilters(){
     const params = new URLSearchParams(location.search);
+    if (!params.get('page')) params.set('page', 1);
 
     const filters = ['tipo', 'qtd', 'de', 'ate'];
 
@@ -125,8 +127,6 @@ function applyFilters(){
         }
 
     })
-
-    params.set('page', 1);
 
     history.replaceState({}, "", `${location.pathname}?${params}`)
     filterCount(params);
