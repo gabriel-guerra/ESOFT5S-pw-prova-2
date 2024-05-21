@@ -25,13 +25,17 @@ function closeFilter(){
     document.querySelector('#modal-filter').close()
 }
 
-function qtdFilter(count){
+function qtdFilter(count, params){
+    const picklist = document.querySelector("#qtd");
+    const qtd = params.get('qtd');
+
+    picklist.innerHTML = `<option value="5">5</option><option value="10">10</option>`
 
     for (let i = 15; i<count; i+= 5){
         const option = document.createElement('option');
         option.value = i;
         option.textContent = i;
-        document.querySelector("#qtd").appendChild(option)
+        picklist.appendChild(option)
     }
 
 }
@@ -101,7 +105,7 @@ function filterAndQuery(e){
 async function queryNews(params){
     const content = await fetch(`${ibgeUrl}?${params}`).then((response) => response.json());
     console.log(content)
-    qtdFilter(content.count)
+    qtdFilter(content.count, params)
     fillContent(content);
     setPaginationButtons(content)
 }
@@ -121,6 +125,8 @@ function applyFilters(){
         }
 
     })
+
+    params.set('page', 1);
 
     history.replaceState({}, "", `${location.pathname}?${params}`)
     filterCount(params);
@@ -155,13 +161,15 @@ function fillContent(content){
 
 function setPaginationButtons(content){
     const ul = document.querySelector('#pagination')
+    ul.innerHTML = ""
 
     const actual = content.page;
     const total = content.totalPages;
-    const size = 5;
+    const leftSize = 4;
+    const rightSize = 6;
     
-    let start = actual - size;
-    let end = actual + size;
+    let start = actual - leftSize;
+    let end = actual + rightSize;
 
     if (start <= 0){
         end = end - start + 1
@@ -170,16 +178,32 @@ function setPaginationButtons(content){
 
     if (end > total){
         end = total
-        start = max(end - (actual * 2) + 1, 1)
+        start = Math.max(end - (actual * 2) + 1, 1)
     }
 
     for (let i = start; i < end; i++){
         const li = document.createElement('li');
+        const button = document.createElement('button');
 
-        li.innerHTML = `
-        <button>${i}</button>
-        `
+        button.textContent = i;
+
+        button.addEventListener('click', setPage)
+
+        li.appendChild(button)
         ul.appendChild(li)
     }
+
+}
+
+function setPage(e){
+
+    const item = e.target;
+    const value = item.textContent;
+
+    const params = new URLSearchParams(location.search);
+    params.set('page', value)
+
+    history.replaceState({}, "", `${location.pathname}?${params}`)   
+    location.reload()
 
 }
