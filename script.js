@@ -2,9 +2,17 @@ const ibgeUrl = `https://servicodados.ibge.gov.br/api/v3/noticias/`
 
 document.addEventListener('DOMContentLoaded', () => {
     const params = new URLSearchParams(location.search);
+    setDefaultQueryString(params)
     filterCount(params);
-    filterAndQuery(null);
+    queryNews();
 })
+
+function setDefaultQueryString(params){
+    if (params.get('qtd') === null) params.set('qtd', 10)
+    if (params.get('page') === null) params.set('page', 1)
+    
+    history.replaceState({}, "", `${location.pathname}?${params}`)
+}
 
 function filterCount(params){
     let count = params.size
@@ -28,11 +36,12 @@ function closeFilter(){
 function qtdFilter(count, params){
     const picklist = document.querySelector("#qtd");
     let qtd = params.get('qtd')
-    if (qtd > count) qtd = 10
+    console.log(qtd)
+    if (qtd > count || qtd === null) qtd = 10
 
     picklist.innerHTML = `<option value="5">5</option><option value="10">10</option>`
 
-    for (let i = 5; i<count; i+= 5){
+    for (let i = 15; i<count; i+= 5){
         const option = new Option(i, i)
         picklist.appendChild(option)
     }
@@ -92,18 +101,8 @@ function submitForm(e){
     queryNews(params);
 }
 
-
-function filterAndQuery(e){ 
-    if(e !== null){
-        e.preventDefault()
-        closeFilter()  
-    }
-
-    const params = applyFilters();
-    queryNews(params)
-}
-
-async function queryNews(params){
+async function queryNews(){
+    const params = new URLSearchParams(location.search);
     const content = await fetch(`${ibgeUrl}?${params}`).then((response) => response.json());
     console.log(content)
     qtdFilter(content.count, params)
@@ -111,7 +110,8 @@ async function queryNews(params){
     setPaginationButtons(content)
 }
 
-function applyFilters(){
+function applyFilters(e){
+    e.preventDefault()
     const params = new URLSearchParams(location.search);
     if (!params.get('page')) params.set('page', 1);
 
@@ -131,7 +131,8 @@ function applyFilters(){
     history.replaceState({}, "", `${location.pathname}?${params}`)
     filterCount(params);
     
-    return params;
+    closeFilter()
+    queryNews();
 }
 
 function fillContent(content){
@@ -181,7 +182,7 @@ function setPaginationButtons(content){
         start = Math.max(end - (actual * 2) + 1, 1)
     }
 
-    for (let i = start; i < end; i++){
+    for (let i = start; i <= end; i++){
         const li = document.createElement('li');
         const button = document.createElement('button');
 
@@ -204,6 +205,6 @@ function setPage(e){
     params.set('page', value)
 
     history.replaceState({}, "", `${location.pathname}?${params}`)   
-    location.reload()
+    queryNews()
 
 }
