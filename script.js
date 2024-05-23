@@ -8,8 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
 })
 
 function setDefaultQueryString(params){
-    if (params.get('qtd') === null) params.set('qtd', 10)
-    if (params.get('page') === null) params.set('page', 1)
+    if (!params.has('qtd')) params.set('qtd', 10)
+    if (!params.has('page')) params.set('page', 1)
     
     history.replaceState({}, "", `${location.pathname}?${params}`)
 }
@@ -33,10 +33,9 @@ function closeFilter(){
     document.querySelector('#modal-filter').close()
 }
 
-function qtdFilter(count, params){
+function setQtdPicklist(count, params){
     const picklist = document.querySelector("#qtd");
     let qtd = params.get('qtd')
-    console.log(qtd)
     if (qtd > count || qtd === null) qtd = 10
 
     picklist.innerHTML = `<option value="5">5</option><option value="10">10</option>`
@@ -105,7 +104,7 @@ async function queryNews(){
     const params = new URLSearchParams(location.search);
     const content = await fetch(`${ibgeUrl}?${params}`).then((response) => response.json());
     console.log(content)
-    qtdFilter(content.count, params)
+    setQtdPicklist(content.count, params)
     fillContent(content);
     setPaginationButtons(content)
 }
@@ -113,7 +112,7 @@ async function queryNews(){
 function applyFilters(e){
     e.preventDefault()
     const params = new URLSearchParams(location.search);
-    if (!params.get('page')) params.set('page', 1);
+    params.set('page', 1);
 
     const filters = ['tipo', 'qtd', 'de', 'ate'];
 
@@ -122,7 +121,7 @@ function applyFilters(e){
         
         if (itemHTML.value !== ""){
             params.set(`${item}`, itemHTML.value);
-        }else if (itemHTML.value === "" && params.get(`${item}`) !== null){
+        }else if (itemHTML.value === "" && !params.has(`${item}`)){
             params.delete(`${item}`)
         }
 
@@ -166,20 +165,24 @@ function setPaginationButtons(content){
 
     const actual = content.page;
     const total = content.totalPages;
-    const leftSize = 4;
-    const rightSize = 6;
-    
+    const leftSize = 5;
+    const rightSize = 4;
+
     let start = actual - leftSize;
     let end = actual + rightSize;
 
-    if (start <= 0){
-        end = end - start + 1
-        start = 1
+    if (start <= 0) {
+        end = end - start + 1;
+        start = 1;
     }
 
-    if (end > total){
-        end = total
-        start = Math.max(end - (actual * 2) + 1, 1)
+    if (end > total) {
+        end = total;
+        start = Math.max(end - leftSize - rightSize, 1);
+    }
+
+    if (start < 1) {
+        start = 1;
     }
 
     for (let i = start; i <= end; i++){
