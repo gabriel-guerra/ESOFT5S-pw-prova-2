@@ -107,6 +107,7 @@ async function queryNews(){
     setQtdPicklist(content.count, params)
     fillContent(content);
     setPaginationButtons(content)
+    paginationStyle(params.get('page'))
 }
 
 function applyFilters(e){
@@ -144,12 +145,15 @@ function fillContent(content){
         try{
             li.innerHTML = `
             <img src="${formatImage(c.imagens)}">
-            <h2>${c.titulo}</h2>
-            <p>${c.introducao}</p>
-            <span>${formatEditorias(c.editorias)}</span>
-            <span>${formatPublishedDate(c.data_publicacao)}</span>
-            <a href="${c.link}">Leia mais</a>
-            <hr />
+            <div class="content-text">
+                <h2>${c.titulo}</h2>
+                <p>${c.introducao}</p>
+                <div class="content-spans">
+                    <span>${formatEditorias(c.editorias)}</span>
+                    <span>${formatPublishedDate(c.data_publicacao)}</span>
+                </div>
+                <a href="${c.link}" target="_blank"><button class="read-more">Leia mais</button></a>
+            </div>
             `
         }catch(e){
             console.error(e)
@@ -190,6 +194,8 @@ function setPaginationButtons(content){
         const button = document.createElement('button');
 
         button.textContent = i;
+        button.value = i;
+        button.classList.add('pagination-button')
 
         button.addEventListener('click', setPage)
 
@@ -210,4 +216,8 @@ function setPage(e){
     history.replaceState({}, "", `${location.pathname}?${params}`)   
     queryNews()
 
+}
+
+function paginationStyle(pageNumber){
+    document.querySelector(`button[value="${pageNumber}"]`).classList.add('pagination-selected');
 }
