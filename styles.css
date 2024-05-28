@@ -158,8 +158,10 @@ main{
 #content li {
     display: grid;
     gap: 10px;
-    width: 100ch;
+    max-width: 100ch;
+    text-wrap: wrap;
     grid-template-columns: 1fr 2fr;
+    margin: 0 20px;
 }
 
 .content-text{
@@ -219,10 +221,34 @@ img{
 
     #modal-filter form{
         display: grid;
-        grid-template-columns: auto;
+        grid-template-columns: 1fr;
         gap: 10px;
         width: 50vw;
         max-width: 600px;
+    }
+
+    #apply-button{
+        grid-column: span 1;
+    }
+
+    #content li {
+        grid-template-columns: 1fr;
+        width: auto;
+        margin: 0 20px;
+    }
+
+    h2{
+        width: auto;
+    }
+
+    #search-bar{
+        width: 50vw;
+        max-width: 500px;       
+    }
+
+    #pagination{
+        margin-left: 20px;
+        margin-right: 20px;
     }
 
 }
