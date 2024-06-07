@@ -103,7 +103,6 @@ function submitForm(e){
 async function queryNews(){
     const params = new URLSearchParams(location.search);
     const content = await fetch(`${ibgeUrl}?${params}`).then((response) => response.json());
-    console.log(content)
     setQtdPicklist(content.count, params)
     fillContent(content);
     setPaginationButtons(content)
